@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 
+/// <summary>
+/// UI MVC Model base class
+/// </summary>
 public class ModelBase: DoubleLockSingleton<ModelBase>
 {
     private Dictionary<int, DataInfo> DataDic;
@@ -16,6 +19,9 @@ public class ModelBase: DoubleLockSingleton<ModelBase>
     // ModelBase.Instance.<Method>;
 }
 
+/// <summary>
+/// Data Type
+/// </summary>
 public class DataInfo
 {
     public int id;
