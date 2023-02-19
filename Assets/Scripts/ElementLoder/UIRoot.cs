@@ -16,7 +16,15 @@ public class UIRoot
 	/// recycle pool 
 	/// </summary>
 	static Transform RecyclePool;
+
+	/// <summary>
+	/// enable view station
+	/// </summary>
 	static Transform WorkStation;
+
+	/// <summary>
+	/// notice view station
+	/// </summary>
 	static Transform NoticeStation;
 
 	/// <summary>

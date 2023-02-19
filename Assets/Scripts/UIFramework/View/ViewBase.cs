@@ -1,6 +1,5 @@
-﻿
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -50,9 +49,27 @@ public class ViewBase
     protected bool isPermanent = false;
 
     /// <summary>
+    /// is view permanent
+    /// </summary>
+    public bool IsPermanent
+    {
+        get => isPermanent;
+        protected set => isPermanent = value;
+    }
+
+    /// <summary>
     /// is UI view visitable
     /// </summary>
     protected bool isVisitable = false;
+
+    /// <summary>
+    /// is UI view visitable
+    /// </summary>
+    public bool IsVisitable
+    {
+        get => isVisitable;
+        protected set => isVisitable = value;
+    }
 
     /// <summary>
     /// view type
@@ -60,9 +77,24 @@ public class ViewBase
     protected ViewType viewType;
 
     /// <summary>
+    /// view type
+    /// </summary>
+    public ViewType ViewType
+    {
+        get => viewType;
+        protected set => viewType = value;
+    }
+
+    /// <summary>
     /// scene type
     /// </summary>
     protected ScenesType scenesType;
+
+    public ScenesType ScenesType
+    {
+        get => scenesType;
+        protected set => scenesType = value;
+    }
 
     /// <summary>
     /// view state type
@@ -83,6 +115,15 @@ public class ViewBase
     /// </summary>
     protected List<Button> buttons;
 
+    /// <summary>
+    /// a list of button in view
+    /// </summary>
+
+    public List<Button> Buttons
+    {
+        get => buttons;
+        protected set => buttons = value;
+    }
 
     #endregion Variables
 
@@ -155,4 +196,147 @@ public class ViewBase
     }
 
     #endregion Api
+
+    #region View Manager
+
+    /// <summary>
+    /// open view
+    /// </summary>
+    public virtual void Open()
+    {
+        // if transform is null, create view game object
+        if(transform == null)
+        {
+            bool CreateViewSuccess = Create();
+        }
+        // if view game object is inactive
+        // set view state type is active
+        // and set parent is object <WorkStation>
+        // and enable view game object, set visitable property true
+        // do OnEnable and OnAddUIEventListener action to enable view script and add event listener
+        if (!transform.gameObject.activeSelf)
+        {
+            viewStateType = ViewStateType.Activated;
+            UIRoot.SetParent(transform, viewStateType);
+            isVisitable = true;
+            OnEnable();
+            OnAddUIEventListener();
+            transform.gameObject.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// close view
+    /// </summary>
+    public virtual void Close()
+    {
+        if (transform.gameObject.activeSelf)
+        {
+            OnRemoveUIEventListener();
+            OnDisable();
+
+            // if this view game object in memory resident
+            if (isPermanent)
+            {
+                transform.gameObject.SetActive(false);
+            }
+            // else
+            else
+            {
+                GameObject.Destroy(transform.gameObject);
+                transform = null;
+            }
+
+            isVisitable = false;
+        }
+    }
+
+    /// <summary>
+    /// preload view
+    /// </summary>
+    public virtual void PreLoad()
+    {
+        if(transform == null)
+        {
+            if (Create())
+            {
+                OnEnable();
+            }
+        }
+    }
+
+    /// <summary>
+    /// flash view
+    /// </summary>
+    public virtual void Flash()
+    {
+
+    }
+
+    public virtual Transform GetRoot()
+    {
+        return this.Transform;
+    }
+
+    #endregion
+
+    #region Internal Use
+
+    /// <summary>
+    /// Create View
+    /// </summary>
+    /// <returns></returns>
+    protected virtual bool Create()
+    {
+        // AssertName == null
+        if (string.IsNullOrWhiteSpace(assertName))
+        {
+            Debug.LogWarning($"[{transform.gameObject.name}.{nameof(viewType)}.Create]: {AssertName} property is an empty");
+            return false;
+        }
+
+        if (transform == null)
+        {
+            // find target view in Resources folder
+            var view = Resources.Load<GameObject>(AssertName);
+
+            // check it : if it is null, print error massage and throw exception
+            if (transform == null)
+            {
+                Debug.LogError( $"[{transform.gameObject.name}.{nameof(viewType)}.Create]: Can not load view game object {AssertName}");
+                throw new Exception();
+            }
+
+            // copy it to game space
+            var viewInGameSpace = GameObject.Instantiate(view);
+            transform = viewInGameSpace.transform;
+
+            // hide it and set hide property
+            transform.gameObject.SetActive(false);
+            viewStateType = ViewStateType.Notice;
+            UIRoot.SetParent(transform, viewStateType);
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// if you want set an view active-self is false, please use this function after set inactive
+    /// </summary>
+    protected virtual void SetViewHideProperty()
+    {
+
+    }
+
+    protected virtual void SetViewEnableProperty()
+    {
+
+    }
+
+    protected virtual void SetViewNoticeProperty()
+    {
+
+    }
+
+    #endregion
 }

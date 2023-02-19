@@ -29,5 +29,6 @@ public enum ViewStateType
 {
     Hidden,
     Activated,
-    Notice
+    Notice,
+    Count
 }
