@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// UI controller base class
@@ -40,19 +41,63 @@ public class UIViewManager: UnityStandardSingleton<UIViewManager>
         
     }
 
-    // open view function
-
-    //
-    public void OpenView()
+    /// <summary>
+    /// try to open view by view type
+    /// </summary>
+    /// <param name="viewType"></param>
+    /// <returns>view which is opened</returns>
+    public virtual ViewBase OpenView(ViewType viewType)
     {
-
+        ViewBase view = null;
+        if (ViewTypeToViewDic.TryGetValue(viewType, out view))
+        {
+            view.Open();
+            return view;
+        }
+        else
+        {
+            Debug.LogError($"[{this.gameObject.name}.{nameof(UIViewManager)}.OpenView]: " +
+                           $"Can not find view by view type {viewType}");
+            return null;
+        }
     }
 
-    // pre load view function
+    /// <summary>
+    /// pre load view function
+    /// </summary>
+    /// <param name="type">scene type which view in</param>
+    public virtual void PreLoadView(ScenesType type)
+    {
+        foreach (ViewBase view in ViewTypeToViewDic.Values)
+        {
+            if (view.ScenesType == type)
+            {
+                view.PreLoad();
+            }
+        }
+    }
 
-
-    // close view function
-
+    /// <summary>
+    /// close view function
+    /// </summary>
+    /// <param name="viewType"></param>
+    /// <returns></returns>
+    //public virtual ViewBase CloseView(ViewType viewType)
+    public virtual void CloseView(ViewType viewType)
+    {
+        ViewBase view = null;
+        if (ViewTypeToViewDic.TryGetValue(viewType, out view))
+        {
+            view.Close();
+            //return view;
+        }
+        else
+        {
+            Debug.LogError($"[{this.gameObject.name}.{nameof(UIViewManager)}.CloseView]: " +
+                           $"Can not find view by view type {viewType}");
+            //return null;
+        }
+    }
 
     // get all views by view type
 
