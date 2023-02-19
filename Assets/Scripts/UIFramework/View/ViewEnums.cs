@@ -20,3 +20,14 @@ public enum ScenesType
     Battle,
     Count
 }
+
+/// <summary>
+/// View State Type
+/// for move view to specified collections of state
+/// </summary>
+public enum ViewStateType
+{
+    Hidden,
+    Activated,
+    Notice
+}

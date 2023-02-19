@@ -22,9 +22,27 @@ public class ViewBase
     protected Transform transform;
 
     /// <summary>
+    /// transform of UI game object
+    /// </summary>
+    public Transform Transform
+    {
+        get => transform;
+        set => transform = value;
+    }
+
+    /// <summary>
     /// assert name of ui view
     /// </summary>
     protected string assertName;
+
+    /// <summary>
+    /// assert name of ui view
+    /// </summary>
+    public string AssertName
+    {
+        get => assertName;
+        set => assertName = value;
+    }
 
     /// <summary>
     /// is view permanent
@@ -46,6 +64,19 @@ public class ViewBase
     /// </summary>
     protected ScenesType scenesType;
 
+    /// <summary>
+    /// view state type
+    /// </summary>
+    protected ViewStateType viewStateType;
+
+    /// <summary>
+    /// view state type
+    /// </summary>
+    public ViewStateType ViewStateType
+    {
+        get => viewStateType;
+        set => viewStateType = value;
+    }
 
     /// <summary>
     /// a list of button in view
