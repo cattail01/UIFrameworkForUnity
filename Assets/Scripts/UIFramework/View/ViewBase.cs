@@ -228,25 +228,32 @@ public class ViewBase
     /// <summary>
     /// close view
     /// </summary>
-    public virtual void Close()
+    public virtual void Close(bool isForceClose = false)
     {
         if (transform.gameObject.activeSelf)
         {
             OnRemoveUIEventListener();
             OnDisable();
 
-            // if this view game object in memory resident
-            if (isPermanent)
+            if (!isForceClose)
             {
-                transform.gameObject.SetActive(false);
+                // if this view game object in memory resident
+                if (isPermanent)
+                {
+                    transform.gameObject.SetActive(false);
+                }
+                // else
+                else
+                {
+                    GameObject.Destroy(transform.gameObject);
+                    transform = null;
+                }
             }
-            // else
             else
             {
                 GameObject.Destroy(transform.gameObject);
                 transform = null;
             }
-
             isVisitable = false;
         }
     }

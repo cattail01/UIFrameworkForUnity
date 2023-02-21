@@ -38,7 +38,7 @@ public class UIViewManager: UnityStandardSingleton<UIViewManager>
     /// </summary>
     public UIViewManager()
     {
-        
+        InitializeViewTypeToViewDic();
     }
 
     /// <summary>
@@ -96,6 +96,30 @@ public class UIViewManager: UnityStandardSingleton<UIViewManager>
             Debug.LogError($"[{this.gameObject.name}.{nameof(UIViewManager)}.CloseView]: " +
                            $"Can not find view by view type {viewType}");
             //return null;
+        }
+    }
+
+    // hide all view by view type
+    public virtual void HideAllView(ScenesType scenesType, bool isDestroy = false)
+    {
+        foreach (ViewBase view in ViewTypeToViewDic.Values)
+        {
+            if (view.ScenesType == scenesType)
+            {
+                view.Close(isDestroy);
+            }
+        }
+    }
+
+    // Force close all view
+    public virtual void ForceCloseAllView(ScenesType scenesType)
+    {
+        foreach (ViewBase view in ViewTypeToViewDic.Values)
+        {
+            if (view.ScenesType == scenesType)
+            {
+                view.Close(true);
+            }
         }
     }
 
